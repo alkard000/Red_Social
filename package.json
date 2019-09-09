@@ -4,7 +4,7 @@
   "description": "Red Social con NodeJS, PostgresSQL y EJS",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon ./index.js"
   },
   "repository": {
     "type": "git",
@@ -20,5 +20,14 @@
   "bugs": {
     "url": "https://github.com/alkard000/Red_Social/issues"
   },
-  "homepage": "https://github.com/alkard000/Red_Social#readme"
+  "homepage": "https://github.com/alkard000/Red_Social#readme",
+  "devDependencies": {
+    "nodemon": "^1.19.2"
+  },
+  "dependencies": {
+    "dotenv": "^8.1.0",
+    "ejs": "^2.7.1",
+    "express": "^4.17.1",
+    "express-ejs-layouts": "^2.5.0"
+  }
 }
