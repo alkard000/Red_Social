@@ -1,0 +1,24 @@
+{
+  "name": "proyecto_2",
+  "version": "1.0.0",
+  "description": "Red Social con NodeJS, PostgresSQL y EJS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alkard000/Red_Social.git"
+  },
+  "keywords": [
+    "Red_Social",
+    "NetWork",
+    "Nodejs"
+  ],
+  "author": "Ivan Aburto",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alkard000/Red_Social/issues"
+  },
+  "homepage": "https://github.com/alkard000/Red_Social#readme"
+}
