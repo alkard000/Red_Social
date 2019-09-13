@@ -8,10 +8,16 @@ module.exports = function() {
     router.get('/', 
         homeController.home
     );
-
     router.get('/crear-cuenta', 
         usersController.formCrearCuenta
     );
+    router.post('/crear-cuenta',
+        usersController.crearNuevaCuenta
+    );
 
+    //INICIAR SESION
+    router.get('/iniciar-sesion', 
+        usersController.formIniciarSesion);
+        
     return router;
 }
