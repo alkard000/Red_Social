@@ -8,11 +8,17 @@ module.exports = function() {
     router.get('/', 
         homeController.home
     );
+
+    //CREAR Y CONFIRMAR CUENTAS
+
     router.get('/crear-cuenta', 
         usersController.formCrearCuenta
     );
     router.post('/crear-cuenta',
         usersController.crearNuevaCuenta
+    );
+    router.get('/confirmar-cuenta/:correo',
+        usersController.confirmarCuenta
     );
 
     //INICIAR SESION
