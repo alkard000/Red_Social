@@ -24,6 +24,9 @@ module.exports = function() {
     //INICIAR SESION
     router.get('/iniciar-sesion', 
         usersController.formIniciarSesion);
+    router.post('/iniciar-sesion',
+        authController.autenticarUsuario
+    );
         
     return router;
 }
