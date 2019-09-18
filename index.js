@@ -6,6 +6,7 @@ const flash = require('connect-flash');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const expressValidator = require('express-validator');
+const passport = require('./config/passport');
 const router = require('./routes');
 
 //DB Y MODELOS
@@ -48,6 +49,10 @@ app.use(session( {
     resave : false,
     saveUninitialized : false
 }))
+
+//INICIALIZAR passport
+app.use(passport.initialize());
+app.use(passport.session());
 
 //FLASH MESSAGES
 app.use(flash());
