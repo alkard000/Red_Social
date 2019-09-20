@@ -7,6 +7,7 @@
     <title>Proyecto - <%- nombrePagina %></title>
     <link rel="stylesheet" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css">
     <link href="https://fonts.googleapis.com/css?family=Raleway:400,700,900|Staatliches&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/trix.css">
     <link rel="stylesheet" href="/css/app.css">
 </head>
 <body>
@@ -16,8 +17,8 @@
         </a>
 
         <nav class="nav">
-            <a href="#">Crear Grupo</a>
-            <a href="iniciar-sesion">Iniciar Sesion</a>
+            <a href="/nuevo-grupo">Crear Grupo</a>
+            <a href="/iniciar-sesion">Iniciar Sesion</a>
             <a href="/crear-cuenta">Registrarse</a>
         </nav>
     </header>
@@ -43,5 +44,7 @@
         </nav>
         <p class="copyright">Todos los Derechos Reservados PROYECTO <%- year %> &copy;</p>
     </footer>
+
+    <script src="/js/trix.js"></script>
 </body>
 </html>

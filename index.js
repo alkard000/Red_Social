@@ -10,8 +10,10 @@ const passport = require('./config/passport');
 const router = require('./routes');
 
 //DB Y MODELOS
-const db = require('./config/db');
-require('./models/Usuarios');
+const db =  require('./config/db');
+            require('./models/Usuarios');
+            require('./models/Categorias');
+            require('./models/Grupos');
 db.sync().then(() => console.log('DB Conectado')).catch((error) => console.log(error));
 
 //Variables de DESARROLLO
