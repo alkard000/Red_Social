@@ -13,7 +13,16 @@ const configuracionMulter = {
             const extension = file.mimetype.split('/')[1];
             next(null, `${shortid.generate()}.${extension}`);
         }
-    })
+    }),
+    fileFilter(req, file, next) {
+        if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png'){
+            //Formato VALIDO
+            next(null, true);
+        } else {
+            //Formato NO VALIDO
+            next(new Error('Formato no Valido'), false);
+        }
+    }
 }
 
 const upload = multer(configuracionMulter).single('imagen');
@@ -23,7 +32,7 @@ exports.subirImagen = (req, res, next) => {
         if(error){
             if(error instanceof multer.MulterError) {
                 if(error.code === 'LIMIT_FILE_SIZE') {
-                    req.flash('error', 'El Archivo de Imagen es muy Grande')
+                    req.flash('error', 'El Archivo de Imagen es muy Grande');
                 } else {
                     req.flash('error', error.message);
                 }
@@ -35,16 +44,7 @@ exports.subirImagen = (req, res, next) => {
         }else {
             next();
         }
-    }),
-    fileFilter(req, file, next) {
-        if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png'){
-            //Formato VALIDO
-            next(null, true);
-        } else {
-            //Formato NO VALIDO
-            next(new Error('Formato no Valido'), false);
-        }
-    }
+    })
 }
 
 exports.formNuevoGrupo = async (req, res) => {
