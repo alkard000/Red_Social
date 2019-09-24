@@ -43,8 +43,40 @@ module.exports = function() {
         gruposController.formNuevoGrupo
     );
     router.post('/nuevo-grupo',
+        authController.usuarioAutenticado,
         gruposController.subirImagen,
         gruposController.crearGrupo
+    );
+
+    //EDITAR GRUPOS
+    router.get('/editar-grupo/:grupoId',
+        authController.usuarioAutenticado,
+        gruposController.formEditarGrupo
+    );
+    router.post('/editar-grupo/:grupoId',
+        authController.usuarioAutenticado,
+        gruposController.editarGrupo
+    );
+
+    //EDITAR IMAGENES
+    router.get('/imagen-grupo/:grupoId',
+        authController.usuarioAutenticado,
+        gruposController.formEditarImagen
+    );
+    router.post('/imagen-grupo/:grupoId',
+        authController.usuarioAutenticado,
+        gruposController.subirImagen,
+        gruposController.editarImagen 
+    );
+
+    //ELIMINAR GURPO
+    router.get('/eliminar-grupo/:grupoId',
+        authController.usuarioAutenticado,
+        gruposController.formEliminarGrupo
+    );
+    router.post('/eliminar-grupo/:grupoId',
+        authController.usuarioAutenticado,
+        gruposController.eliminarGrupo
     );
         
     return router;
