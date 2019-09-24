@@ -5,6 +5,7 @@ const usersController = require('../controllers/usersController');
 const authController = require('../controllers/authController');
 const adminController = require('../controllers/adminController');
 const gruposController = require('../controllers/gruposController');
+const eventosController = require('../controllers/eventosController');
 
 
 module.exports = function() {
@@ -36,6 +37,8 @@ module.exports = function() {
         authController.usuarioAutenticado,
         adminController.panelAdministracion
     );
+
+    //-------------------CRUD GRUPOS----------------------//
 
     //CREAR GRUPOS
     router.get('/nuevo-grupo',
@@ -78,6 +81,18 @@ module.exports = function() {
         authController.usuarioAutenticado,
         gruposController.eliminarGrupo
     );
-        
+
+    //-------------------CRUD GRUPOS----------------------//
+
+    //-------------------CRUD EVENTOS----------------------//
+
+    //NUEVO EVENTO
+    router.get('/nuevo-evento', 
+        authController.usuarioAutenticado,
+        eventosController.formNuevoEvento
+    );
+
+    //-------------------CRUD EVENTOS----------------------//
+     
     return router;
 }
