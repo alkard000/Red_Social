@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const db = require('../config/db');
 
-const Categorias = db.define('categorias', {
+const Categoria = db.define('categorias', {
     id : {
         type : Sequelize.INTEGER,
         primaryKey : true,
@@ -9,5 +9,4 @@ const Categorias = db.define('categorias', {
     },
     nombre : Sequelize.TEXT
 });
-
-module.exports = Categorias;
+module.exports = Categoria;

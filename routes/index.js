@@ -1,46 +1,44 @@
 const express = require('express');
 const router = express.Router();
+
+//IMPORTAR CONTROLADORES
 const homeController = require('../controllers/homeController');
-const usersController = require('../controllers/usersController');
+const usuariosController = require('../controllers/usuariosController');
 const authController = require('../controllers/authController');
 const adminController = require('../controllers/adminController');
 const gruposController = require('../controllers/gruposController');
-const eventosController = require('../controllers/eventosController');
+const meetiController = require('../controllers/meetiController');
 
+module.exports = function(){
 
-module.exports = function() {
-    router.get('/', 
-        homeController.home
-    );
+    router.get('/', homeController.home);
 
-    //CREAR Y CONFIRMAR CUENTAS
+    //RUTAS DE LA CREACION  Y CONFIRMACION DE CUENTAS
     router.get('/crear-cuenta', 
-        usersController.formCrearCuenta
+        usuariosController.formCrearCuentas
     );
-    router.post('/crear-cuenta',
-        usersController.crearNuevaCuenta
+    router.post('/crear-cuenta', 
+        usuariosController.crearNuevaCuenta
     );
-    router.get('/confirmar-cuenta/:correo',
-        usersController.confirmarCuenta
+    router.get('/confirmar-cuenta/:correo', 
+        usuariosController.confirmarCuenta
     );
 
-    //INICIAR SESION
+    //RUTAS DE INICIAR SESSION
     router.get('/iniciar-sesion', 
-        usersController.formIniciarSesion
+        usuariosController.formIniciarSesion
     );
-    router.post('/iniciar-sesion',
+    router.post('/iniciar-sesion', 
         authController.autenticarUsuario
     );
 
-    //ADMINISTRACION
+    //RUTAS DEL PANEL DE ADMINISTRACION
     router.get('/administracion',
         authController.usuarioAutenticado,
         adminController.panelAdministracion
     );
 
-    //-------------------CRUD GRUPOS----------------------//
-
-    //CREAR GRUPOS
+    //RUTAS PARA LA CREACION DE NUEVOS GRUPOS
     router.get('/nuevo-grupo',
         authController.usuarioAutenticado,
         gruposController.formNuevoGrupo
@@ -51,7 +49,7 @@ module.exports = function() {
         gruposController.crearGrupo
     );
 
-    //EDITAR GRUPOS
+    //RUTAS PARA EDITAR GRUPOS
     router.get('/editar-grupo/:grupoId',
         authController.usuarioAutenticado,
         gruposController.formEditarGrupo
@@ -61,7 +59,7 @@ module.exports = function() {
         gruposController.editarGrupo
     );
 
-    //EDITAR IMAGENES
+    //RUTAS PARA EDITAR IMAGEN
     router.get('/imagen-grupo/:grupoId',
         authController.usuarioAutenticado,
         gruposController.formEditarImagen
@@ -69,30 +67,26 @@ module.exports = function() {
     router.post('/imagen-grupo/:grupoId',
         authController.usuarioAutenticado,
         gruposController.subirImagen,
-        gruposController.editarImagen 
+        gruposController.editarImagen
     );
 
-    //ELIMINAR GURPO
-    router.get('/eliminar-grupo/:grupoId',
+    //RUTAS ELIMINAR GRUPOS
+    router.get('/eliminar-grupo/:grupoId', 
         authController.usuarioAutenticado,
         gruposController.formEliminarGrupo
-    );
-    router.post('/eliminar-grupo/:grupoId',
+    )
+    router.post('/eliminar-grupo/:grupoId', 
         authController.usuarioAutenticado,
         gruposController.eliminarGrupo
     );
 
-    //-------------------CRUD GRUPOS----------------------//
-
-    //-------------------CRUD EVENTOS----------------------//
-
-    //NUEVO EVENTO
-    router.get('/nuevo-evento', 
+    //RUTAS PARA CREAR NUEVOS MEETIS
+    router.get('/nuevo-meeti',
         authController.usuarioAutenticado,
-        eventosController.formNuevoEvento
+        meetiController.formNuevoMeeti
     );
 
-    //-------------------CRUD EVENTOS----------------------//
-     
+
     return router;
 }
+

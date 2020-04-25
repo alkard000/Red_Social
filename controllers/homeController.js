@@ -1,5 +1,5 @@
-exports.home = (req, res) => {
+exports.home =  (req, res) => {
     res.render('home', {
-        nombrePagina : 'Home'
+        nombrePagina : 'Inicio'
     })
 };

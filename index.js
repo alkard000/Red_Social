@@ -1,78 +1,78 @@
 const express = require('express');
-const expressLayout = require('express-ejs-layouts');
+const expressLayouts = require('express-ejs-layouts');
 const path = require('path');
 const bodyParser = require('body-parser');
-const flash = require('connect-flash');
+const flash  = require('connect-flash');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const expressValidator = require('express-validator');
 const passport = require('./config/passport');
 const router = require('./routes');
 
-//DB Y MODELOS
-const db =  require('./config/db');
-            require('./models/Usuarios');
-            require('./models/Categorias');
-            require('./models/Grupos');
-db.sync().then(() => console.log('DB Conectado')).catch((error) => console.log(error));
+//CONFIGURACION Y MODELOS DE LA BASE DE DATOS
+const db = require('./config/db');
+    require('./models/Usuarios');
+    require('./models/Categorias');
+    require('./models/Grupo');
+    db.sync().then(() => console.log('DB Conectada')).catch((error) => console.log('error'));
 
-//Variables de DESARROLLO
-require('dotenv').config({
-    path : 'variable.env'
-});
+//IMPORTAR EL ARCHIVO DOTENV
+require('dotenv').config({ path : 'variables.env' });
 
-//Entorno de DESARROLLO
+//APLICACION PRINCIPAL
 const app = express();
 
-//BODY-PARSER
+//BODY PARSER PARA LEER FORMULARIOS
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded( { extended : true } ));
+app.use(bodyParser.urlencoded({
+    extended : true
+}));
 
-//EXPRESS VALIDATOR
+//EXPRESS VALIDATOR (VALIDACION DE CONTRASENAS)
 app.use(expressValidator());
 
-//Habilitar template engine
-app.use(expressLayout);
+//HABILITAR EJS COMO TEMPLATE ENGINE =>
+app.use(expressLayouts);
 app.set('view engine', 'ejs');
 
-//UBICACION DE LAS VISTAS
+//UBICACION DE LAS VISTAS => 
 app.set('views', path.join(__dirname, './views'));
 
-//archivos ESTATICOS
+//ARCHIVO ESTATICOS => 
 app.use(express.static('public'));
 
-//Habilitar COOKIEPARSER
+//HABILITAR COOKIE PARSER
 app.use(cookieParser());
 
-//Cear SESSION
-app.use(session( {
+//CREAR LA SESSION =>
+app.use(session({
     secret : process.env.SECRETO,
     key : process.env.KEY,
     resave : false,
     saveUninitialized : false
 }))
 
-//INICIALIZAR passport
+//INICIALIZAR PASSPORT
 app.use(passport.initialize());
 app.use(passport.session());
 
-//FLASH MESSAGES
+//AGREGAR FLASH MESSAGES PARA LA VALIDACION =>
 app.use(flash());
 
-//MIDDLEWARES
+//MIDDLEWARES (USUARIO LOGUEAO, FLASH MESSAGES, FECHA ACTUAL =>
 app.use((req, res, next) => {
     res.locals.mensajes = req.flash();
     const fecha = new Date();
     res.locals.year = fecha.getFullYear();
 
     next();
-});
+})
 
-//ROUTING
+// EL ROUTING => 
 app.use('/', router());
 
-
-//AGREGA EL PUERTO
+//Agrega el PUERTO => 
 app.listen(process.env.PORT, () => {
-    console.log('Servidor activo');
+    console.log('App listening on port 3000!');
 });
+

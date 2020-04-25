@@ -1,19 +1,21 @@
 const passport = require('passport');
 
+//AUTENTICACION DEL USUSARIO
 exports.autenticarUsuario = passport.authenticate('local', {
     successRedirect : '/administracion',
     failureRedirect : '/iniciar-sesion',
     failureFlash : true,
-    badRequestMessage : 'Ambos campos son Obligatorios'
+    badRequestMessage : 'Ambos campos son obligatorios'
 });
 
-//Revisar AUTENTICACION
-
+//REVISAR SI EL USUARIO ESTA AUTENTICADO
 exports.usuarioAutenticado = (req, res, next) => {
-    //Usuario AUTENTICADO
-    if(req.isAuthenticated() ) {
+
+    //SI EL USUARIO ESTA AUTENTICADO, "NO PROBLEM"
+    if(req.isAuthenticated()){
         return next();
     }
-    //Usuario NO AUTENTICADO
+
+    //SI NO ESTA AUTENTICADO
     return res.redirect('/iniciar-sesion');
 }
