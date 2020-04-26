@@ -85,7 +85,33 @@ module.exports = function(){
         authController.usuarioAutenticado,
         meetiController.formNuevoMeeti
     );
+    router.post('/nuevo-meeti',
+        authController.usuarioAutenticado,
+        meetiController.sanitizarMeeti,
+        meetiController.crearMeeti
+    );
 
+    //RUTAS PARA EDITAR EL MEETI
+    router.get('/editar-meeti/:id',
+        authController.usuarioAutenticado,
+        meetiController.formEditarMeeti,
+        meetiController.formEliminarMeeti
+    );
+    router.post('/editar-meeti/:id',
+        authController.usuarioAutenticado,
+        meetiController.editarMeeti,
+        meetiController.eliminarMeeti
+    );
+    
+    //RUTAS PARA ELIMINAR EL MEETI
+    router.get('/eliminar-meeti/:id',
+        authController.usuarioAutenticado,
+        meetiController.formEliminarMeeti
+    );
+    router.post('/eliminar-meeti/:id',
+        authController.usuarioAutenticado,
+        meetiController.eliminarMeeti
+    );
 
     return router;
 }

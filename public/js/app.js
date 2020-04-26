@@ -1,10 +1,46 @@
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 
-const lat = -33.4372;
-const lng = -70.6506;
+//OBTENER LOS VALORES DE LA BASE DE DATOS
+
+
+const lat = document.querySelector('#lat').value || -33.4372;
+const lng = document.querySelector('#lng').value || -70.6506;
+const direccion = document.querySelector('#direccion').value || '';
+const geocodeService = L.esri.Geocoding.geocodeService();
+
+
 const map = L.map('mapa').setView([lat, lng], 15);
+
 let markers = new L.FeatureGroup().addTo(map);
 let marker;
+
+//COLOCAR EL PING EN EDICION
+if(lat && lng){
+    marker = new L.marker([lat, lng], { //==> SE UBICA EL PUNTERO A MEDIDA QUE SE BUSCA EN EL INPUT
+        draggable : true, //==> SE MUEVE EL MAPA CON EL PUNTERO
+        autoPan : true    //==> SE CENTRA EL MAPA
+    })
+    .addTo(map)
+    .bindPopup(direccion)
+    .openPopup();
+
+    //DETECTAR EL MOVIMIENTO DEL MARKER ==> SE CAMBIAN LAS COORDENADAS POR EL MOVIMIENTO
+    marker.on('moveend', function(e){
+        marker = e.target;
+        const posicion = marker.getLatLng(); //==>ACCEDEMOS A LA LATITUD Y LONGITUD
+        map.panTo(new L.LatLng(posicion.lat, posicion.lng)); //==> ESTA FUNCION CENTRA EL MAPA A MEDIDA QUE SE CAMBIA EL AMRCADOR
+
+        //REVERSE GEOCODING CUANDO EL USUARIO REUBICA EL PIN
+        geocodeService.reverse().latlng(posicion, 15).run(function(error, result) { //==>SE LE PASA EL NUEVO PUNTO, CON REVERSE GEOCODING A LA POSICION DEL PIN CUANDO REINICIA E LMOVIMIENTO
+            
+            llenarInputs(result);
+
+            //ASIGNA LOS VALORES DLE POPUP DEL MARKER 
+            marker.bindPopup(result.address.LongLabel);
+            console.log(result);
+        });
+    })    
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

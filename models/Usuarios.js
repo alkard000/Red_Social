@@ -2,16 +2,17 @@ const Sequelize = require('sequelize');
 const db = require('../config/db');
 const bcrypt = require('bcrypt-nodejs');
 
+//CREANDO EL MODELO DE LOS USUARIOS PARA LA BASE DE DATOS
 const Usuarios = db.define('usuarios', {
     id : {
-        type : Sequelize.INTEGER,
+        type  :Sequelize.INTEGER,
         primaryKey : true,
         autoIncrement : true
     },
-    nombre : Sequelize.STRING(60),
-    imagen : Sequelize.STRING(40),
+    nombre : Sequelize.STRING(60), 
+    imagen : Sequelize.STRING(60),
     email : {
-        type : Sequelize.STRING(30),
+        type : Sequelize.STRING(40),
         allowNull : false,
         validate : {
             isEmail : {
@@ -19,35 +20,37 @@ const Usuarios = db.define('usuarios', {
             }
         },
         unique : {
-            args : true,
-            msg : 'Email ya Registrado'
+            args : true, 
+            msg : 'Usuario ya registrado'
         }
     },
     password : {
-        type : Sequelize.STRING(60),
+        type  : Sequelize.STRING(60),
         allowNull : false,
         validate : {
             notEmpty : {
-                msg : 'El password no puede ir Vacio'
+                msg : 'El password no puede ir vacio'
             }
         }
     },
     activo : {
-        type : Sequelize.INTEGER(1),
+        type : Sequelize.INTEGER,
         defaultValue : 0
     },
     tokenPassword : Sequelize.STRING,
     expiraToken : Sequelize.DATE
-}, {//HASHEAR
+}, 
+{
     hooks : {
         beforeCreate(usuario) {
-            usuario.password = bcrypt.hashSync(usuario.password, bcrypt.genSaltSync(10), null)
-        },
+            usuario.password = bcrypt.hashSync(usuario.password, bcrypt.genSaltSync(10), null);
+        }
     }
-});
-//COMPARAR
-Usuarios.prototype.validarPassword = function(password) {
-    return bcrypt.compareSync(password, this.password)
+})
+
+//METODO PARA COMPARAR EL PASSWORD
+Usuarios.prototype.validarPassword = function(password){
+    return bcrypt.compareSync(password, this.password);
 }
-// EXPORTAR
+
 module.exports = Usuarios;
