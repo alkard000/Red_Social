@@ -32,6 +32,14 @@ module.exports = function(){
         authController.autenticarUsuario
     );
 
+    //RUTAS PARA CERRAR SESION
+    router.get('/cerrar-sesion',
+        authController.usuarioAutenticado,
+        authController.cerrarSesion
+    );
+
+//========================RUTAS INTERNAS, PARA EL USUARIO AUTENTICADO==============================//
+
     //RUTAS DEL PANEL DE ADMINISTRACION
     router.get('/administracion',
         authController.usuarioAutenticado,
@@ -112,6 +120,39 @@ module.exports = function(){
         authController.usuarioAutenticado,
         meetiController.eliminarMeeti
     );
+
+//========================RUTAS PARA LOS PERFILES==============================//
+
+    //RUTAS PARA EDITAR INFORMACION DE PERFIL
+    router.get('/editar-perfil',
+        authController.usuarioAutenticado,
+        usuariosController.formEditarPerfil
+    ); 
+    router.post('/editar-perfil',
+        authController.usuarioAutenticado,
+        usuariosController.editarPerfil
+    ); 
+
+    //RUTAS PARA CAMBIAR EL PASSWORD
+    router.get('/cambiar-password',
+        authController.usuarioAutenticado,
+        usuariosController.formCambiarPassword
+    ); 
+    router.post('/cambiar-password',
+        authController.usuarioAutenticado,
+        usuariosController.cambiarPassword
+    );  
+    
+    //RUTAS PARA SUBIR IMAGEN DE PERFIL
+    router.get('/imagen-perfil',
+        authController.usuarioAutenticado,
+        usuariosController.formSubirImagenPerfil
+    );  
+    router.post('/imagen-perfil',
+        authController.usuarioAutenticado,
+        usuariosController.subirImagenPerfil,
+        usuariosController.guardarImagenPerfil
+    );  
 
     return router;
 }

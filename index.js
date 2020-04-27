@@ -62,6 +62,7 @@ app.use(flash());
 
 //MIDDLEWARES (USUARIO LOGUEAO, FLASH MESSAGES, FECHA ACTUAL =>
 app.use((req, res, next) => {
+    res.locals.usuario = {...req.user} || null;//CONDICIONAL, DONDE SI NO EXISTE USUARIO, ESTE VA A SER NULL
     res.locals.mensajes = req.flash();
     const fecha = new Date();
     res.locals.year = fecha.getFullYear();

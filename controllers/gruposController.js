@@ -209,7 +209,7 @@ exports.editarImagen = async (req, res, next) => {
 
     //GUARDAR EN LA BASE DE DATOS
     await grupo.save();
-    req.flash('exito', 'Cambio almacenados correctamente');
+    req.flash('exito', 'Cambios almacenados correctamente');
     res.redirect('/administracion');
 }
 
