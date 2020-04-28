@@ -126,6 +126,12 @@ p {
 .card {
     border: 1px solid #E8E8E8;
     margin-bottom: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: auto;
+    align-content: center;
     
 }
 .card .card-texto {

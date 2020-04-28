@@ -4,6 +4,8 @@ const Grupos = require('../models/Grupo');
 const multer = require('multer');
 const shortid = require('shortid');
 const fs = require('fs');
+const uuid = require('uuid/v4');
+
 
 const configuracionMulter = {
     limits : {
@@ -81,6 +83,8 @@ exports.crearGrupo = async (req, res) => {
     if(req.file){ //==> REVISAR SI HAY UN ARCHIVO PARA ASIGNARLO
        grupo.imagen = req.file.filename;
     }
+
+    grupo.id = uuid();
 
     try {
 
@@ -228,7 +232,7 @@ exports.formEliminarGrupo = async (req, res, next) => {
         return next();
     }
 
-    //TODO BIEN, EJECUTAR LA VISTA
+    //"TODO" BIEN, EJECUTAR LA VISTA
     res.render('eliminar-grupo', {
         nombrePagina : `Eliminar Grupo : ${grupo.nombre}`
     })

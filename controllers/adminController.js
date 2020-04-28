@@ -21,7 +21,10 @@ exports.panelAdministracion = async (req, res) => {
             fecha : {
                 [Op.gte] : moment(new Date()).format("YYYY-MM-DD") //==>FECHAS MAYORES O IGUALES A LA FECHA ACTUAL. PROXIMOS EVENTOS
             }
-        }
+        },
+        order : [
+            ['fecha', 'DESC']
+    ]
     }));
     consultas.push(Meeti.findAll({
         where : {

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-//IMPORTAR CONTROLADORES
+//IMPORTAR CONTROLADORES DEL BACKEND
 const homeController = require('../controllers/homeController');
 const usuariosController = require('../controllers/usuariosController');
 const authController = require('../controllers/authController');
@@ -9,9 +9,29 @@ const adminController = require('../controllers/adminController');
 const gruposController = require('../controllers/gruposController');
 const meetiController = require('../controllers/meetiController');
 
+//IMPORTAR CONTROLADORES DEL FRONTEND
+const meetiControllerFE = require('../controllers/frontend/meetiControllerFE');
+
 module.exports = function(){
 
-    router.get('/', homeController.home);
+    router.get('/', 
+        homeController.home
+    );
+
+    //MOSTRAR UN MEETI Y SU INFORMACION
+    router.get('/meeti/:slug',
+        meetiControllerFE.mostrarMeeti
+    );
+
+    //MOSTRAR ASISTENTES DEL MEETI
+    router.get('/asistentes/:slug', 
+        meetiControllerFE.mostrarAsistentes
+    );
+
+    //MOSTRAR ASISTENCIA DEL USUARIO A UN MEETI
+    router.post('/confirmar-asistencia/:slug',
+        meetiControllerFE.confirmarAsistencia
+    );
 
     //RUTAS DE LA CREACION  Y CONFIRMACION DE CUENTAS
     router.get('/crear-cuenta', 
