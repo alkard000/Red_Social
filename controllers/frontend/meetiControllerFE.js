@@ -1,6 +1,7 @@
 const Meetis = require('../../models/Meetis');
 const Grupos = require('../../models/Grupo');
 const Usuarios = require('../../models/Usuarios');
+const Categorias = require('../../models/Categorias');
 
 const moment = require('moment');
 const Sequelize = require('sequelize');
@@ -102,7 +103,7 @@ exports.mostrarAsistentes = async (req, res) => {
     const {interesados} = meeti; //==>SE GUARDA LA CONSULTA DEL MEETI EN UN OBJETO
 
     const asistentes = await Usuarios.findAll({//==> SE REANUDA LA CONSULTA, PERO ESTA VEZ PARA USUARIOS, 
-                                                //   SE EXTRAE NOMBRE E IMAGEN, DONDE EL ID DLE USUARIO ES EL INTERESAOD
+                                                //   SE EXTRAE NOMBRE E IMAGEN, DONDE EL ID DDEL USUARIO ES EL INTERESAOD
         attributes : [
             'nombre',
             'imagen'
@@ -117,4 +118,43 @@ exports.mostrarAsistentes = async (req, res) => {
         nombrePagina : 'Listado Asistentes del Meeti',
         asistentes
     })
+}
+
+//MOSTRAR MEETIS AGRUPADOS POR CATEGORIAS
+
+exports.mostrarCategoria = async (req, res, next) => {
+    const categoria = await Categorias.findOne({
+        where : {
+            slug : req.params.categoria
+        },
+        attributes : [
+            'id',
+            'nombre'
+        ]
+    });
+
+    const meetis = await Meetis.findAll({
+        order : [
+            ['fecha', 'ASC'],
+            ['hora', 'ASC']
+        ],
+        include : [
+            {
+                model : Grupos,
+                where : {categoriaId : categoria.id}
+            },
+            {
+                model : Usuarios
+            }
+        ]
+    });
+
+    //PASARLO A LA VISTA
+    res.render('categoria', {
+        nombrePagina : `Categoria : ${categoria.nombre}`,
+        meetis,
+        categoria,
+        moment
+    })
+    console.log(categoria.id);
 }

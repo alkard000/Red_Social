@@ -812,3 +812,18 @@ div.asistentes h1,
         flex: 1;
     }
 }
+
+.lista-grupos li {
+    margin-bottom: 2rem;
+    padding: 15 px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: auto;
+    align-content: center;
+    border: 1px solid black;
+}
+.lista-grupos li h3 {
+    padding: 0 16px;
+}

@@ -11,12 +11,17 @@ const meetiController = require('../controllers/meetiController');
 
 //IMPORTAR CONTROLADORES DEL FRONTEND
 const meetiControllerFE = require('../controllers/frontend/meetiControllerFE');
+const usuariosControllerFE = require('../controllers/frontend/usuariosControllerFE');
+const gruposControllerFE = require('../controllers/frontend/gruposControllerFE');
+
 
 module.exports = function(){
 
     router.get('/', 
         homeController.home
     );
+
+//========================RUTAS DEL FRONTEND, PARA MOSTRAR==============================//
 
     //MOSTRAR UN MEETI Y SU INFORMACION
     router.get('/meeti/:slug',
@@ -28,10 +33,28 @@ module.exports = function(){
         meetiControllerFE.mostrarAsistentes
     );
 
+    //MOSTRAR PERFIL EN EL FRONTEND
+    router.get('/usuarios/:id',
+        usuariosControllerFE.mostrarUsuario
+    );
+
+
     //MOSTRAR ASISTENCIA DEL USUARIO A UN MEETI
     router.post('/confirmar-asistencia/:slug',
         meetiControllerFE.confirmarAsistencia
     );
+
+    //MUESTRA LOS GRUPOS EN EL FRONTEND
+    router.get('/grupos/:id',
+        gruposControllerFE.mostrarGrupo
+    );
+
+    //MUESTRA MEETIS POR CATEGORIA
+    router.get('/categoria/:categoria',
+        meetiControllerFE.mostrarCategoria
+    );
+
+//========================RUTAS PARA LAS CUENTAS==============================//
 
     //RUTAS DE LA CREACION  Y CONFIRMACION DE CUENTAS
     router.get('/crear-cuenta', 
