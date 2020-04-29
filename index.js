@@ -15,6 +15,7 @@ const db = require('./config/db');
     require('./models/Categorias');
     require('./models/Grupo');
     require('./models/Meetis');
+    require('./models/Comentarios');
     db.sync().then(() => console.log('DB Conectada')).catch((error) => console.log('error'));
 
 //IMPORTAR EL ARCHIVO DOTENV

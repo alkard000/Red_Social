@@ -7,9 +7,12 @@ const Comentarios = db.define('comentario', {
     id : {
         type : Sequelize.INTEGER,
         primaryKey : true,
-        auroIncrement : true
+        autoIncrement : true
     },
     mensaje : Sequelize.TEXT
+},
+{
+    timestamps : false
 });
 
 Comentarios.belongsTo(Usuarios);

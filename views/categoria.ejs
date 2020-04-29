@@ -13,7 +13,7 @@
                         <% moment.locale('es'); %> 
                         <% const fecha = meeti.fecha + ' ' + meeti.hora %> 
                         <p class="fecha"><%= moment(fecha).format('LLLL') %> horas</p>
-                        <a href="#">
+                        <a href="/meeti/<%= meeti.slug %>">
                             <h3><%= meeti.titulo %> </h3>
                         </a>
                         <div class="info-autor">

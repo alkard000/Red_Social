@@ -1,5 +1,6 @@
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import asistencia from './asistencia';
+import eliminarComentario from './eliminarComentario';
 
 //OBTENER LOS VALORES DE LA BASE DE DATOS
 
