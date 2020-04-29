@@ -14,6 +14,7 @@ const meetiControllerFE = require('../controllers/frontend/meetiControllerFE');
 const usuariosControllerFE = require('../controllers/frontend/usuariosControllerFE');
 const gruposControllerFE = require('../controllers/frontend/gruposControllerFE');
 const comentariosControllerFE = require('../controllers/frontend/comentariosControllerFE');
+const busquedaControllerFE = require('../controllers/frontend/busquedaControllerFE');
 
 module.exports = function(){
 
@@ -33,7 +34,7 @@ module.exports = function(){
         comentariosControllerFE.agregarComentario
     );
 
-    //ELIMINAR COMENTARIOS DL MEETI
+    //ELIMINAR COMENTARIOS DEL MEETI
     router.post('/eliminar-comentario',
         comentariosControllerFE.eliminarComentario
     );
@@ -61,6 +62,11 @@ module.exports = function(){
     //MUESTRA MEETIS POR CATEGORIA
     router.get('/categoria/:categoria',
         meetiControllerFE.mostrarCategoria
+    );
+
+    //BUSQUEDA
+    router.get('/busqueda',
+        busquedaControllerFE.resultadosBusqueda
     );
 
 //========================RUTAS PARA LAS CUENTAS==============================//

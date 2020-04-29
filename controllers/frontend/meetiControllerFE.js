@@ -6,6 +6,7 @@ const Comentarios = require('../../models/Comentarios');
 
 const moment = require('moment');
 const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 
 exports.mostrarMeeti = async (req, res) => {
@@ -15,11 +16,11 @@ exports.mostrarMeeti = async (req, res) => {
         },
         include : [
             {
-                model: Grupos
+                model: Grupos //SE OBTIENE EL GRUPO DE MEETI
             },
             {
-                model : Usuarios,
-                attributes : ['id', 'nombre', 'imagen']
+                model : Usuarios, //USUARIO DEL MEETI
+                attributes : ['id', 'nombre', 'imagen']//==>ID, NOMBRE E IMAGEN DE USUARIO
             }
         ]
     });
@@ -28,6 +29,35 @@ exports.mostrarMeeti = async (req, res) => {
     if(!meeti){
         res.redirect('/');
     }
+
+    //CONSULTA POR MEETI CERCANOS ==> CREAMOS UN OBJETO DE POSTGIS 
+    //Y EL LITERAL CREA LOS DATOS SIN ESCAPAR (SIN SANITIZAR, NI ARREGLOS, NI OBJETOS)
+    //(ST_GEOMFROMTEXT)==> GENERA UN OBJETO Y LO POSICIONA EN EL MAPA
+    const ubicacion = Sequelize.literal(`ST_GeomFromText( 'POINT( ${meeti.ubicacion.coordinates[0]} 
+                                                                  ${meeti.ubicacion.coordinates[1]} )' )`);
+
+    //ST_SINTANCE_SPHERE ==> RETORNA UNA LINEA EN METROS
+    //SE CALCULA LA DISTANCIA EN BASE A LA UBICACION
+    const distancia = Sequelize.fn('ST_Distance_Sphere', Sequelize.col('ubicacion'), ubicacion);
+
+    //ENCONTRAR MEETIS CERCANOS
+    const cercanos = await Meetis.findAll({
+        order : distancia, //ORDEN DEL MAS CERCANO AL MAS LEJANO
+        where : Sequelize.where(distancia, {//SE BUSCA LITERALMENTE UN ALIAS (DE LA DISANCIA) Y NO UNA TABLA
+            [Op.lte] : 2000                 //DISTANCIA DE 2 KM
+        }),
+        limit : 3, //MAXIMO 3 MEETIS CERCANOS
+        offset : 1, //SALTARSE EL PRIMER
+        include : [
+            {
+                model: Grupos //SE OBTIENE EL GRUPO DE MEETI
+            },
+            {
+                model : Usuarios, //USUARIO DEL MEETI
+                attributes : ['id', 'nombre', 'imagen']//==>ID, NOMBRE E IMAGEN DE USUARIO
+            }
+        ]
+    })
 
     //EXTRAEMOS INFORMACION D ELOS COMENTARIOS PARA MOSTRARLOS EN EL MEETI
     //DE DEBE CONSULTAR LEUGO DE VERIFICAR LA EXISTENCIA DEL MEETI
@@ -47,6 +77,7 @@ exports.mostrarMeeti = async (req, res) => {
         nombrePagina : meeti.titulo,
         meeti,
         moment,
+        cercanos,
         comentarios
     })
 }

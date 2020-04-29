@@ -1,81 +1,217 @@
 const express = require('express');
-const expressLayouts = require('express-ejs-layouts');
-const path = require('path');
-const bodyParser = require('body-parser');
-const flash  = require('connect-flash');
-const session = require('express-session');
-const cookieParser = require('cookie-parser');
-const expressValidator = require('express-validator');
-const passport = require('./config/passport');
-const router = require('./routes');
+const router = express.Router();
 
-//CONFIGURACION Y MODELOS DE LA BASE DE DATOS
-const db = require('./config/db');
-    require('./models/Usuarios');
-    require('./models/Categorias');
-    require('./models/Grupo');
-    require('./models/Meetis');
-    require('./models/Comentarios');
-    db.sync().then(() => console.log('DB Conectada')).catch((error) => console.log('error'));
+//IMPORTAR CONTROLADORES DEL BACKEND
+const homeController = require('../controllers/homeController');
+const usuariosController = require('../controllers/usuariosController');
+const authController = require('../controllers/authController');
+const adminController = require('../controllers/adminController');
+const gruposController = require('../controllers/gruposController');
+const meetiController = require('../controllers/meetiController');
 
-//IMPORTAR EL ARCHIVO DOTENV
-require('dotenv').config({ path : 'variables.env' });
+//IMPORTAR CONTROLADORES DEL FRONTEND
+const meetiControllerFE = require('../controllers/frontend/meetiControllerFE');
+const usuariosControllerFE = require('../controllers/frontend/usuariosControllerFE');
+const gruposControllerFE = require('../controllers/frontend/gruposControllerFE');
+const comentariosControllerFE = require('../controllers/frontend/comentariosControllerFE');
+const busquedaControllerFE = require('../controllers/frontend/busquedaControllerFE');
 
-//APLICACION PRINCIPAL
-const app = express();
+module.exports = function(){
 
-//BODY PARSER PARA LEER FORMULARIOS
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-    extended : true
-}));
+    router.get('/', 
+        homeController.home
+    );
 
-//EXPRESS VALIDATOR (VALIDACION DE CONTRASENAS)
-app.use(expressValidator());
+//========================RUTAS DEL FRONTEND, PARA MOSTRAR==============================//
 
-//HABILITAR EJS COMO TEMPLATE ENGINE =>
-app.use(expressLayouts);
-app.set('view engine', 'ejs');
+    //MOSTRAR UN MEETI Y SU INFORMACION
+    router.get('/meeti/:slug',
+        meetiControllerFE.mostrarMeeti
+    );    
+    
+    //MOSTRAR LOS COMENTARIOS DEL MEETI
+    router.post('/meeti/:id', 
+        comentariosControllerFE.agregarComentario
+    );
 
-//UBICACION DE LAS VISTAS => 
-app.set('views', path.join(__dirname, './views'));
+    //ELIMINAR COMENTARIOS DEL MEETI
+    router.post('/eliminar-comentario',
+        comentariosControllerFE.eliminarComentario
+    );
 
-//ARCHIVO ESTATICOS => 
-app.use(express.static('public'));
+    //MOSTRAR ASISTENTES DEL MEETI
+    router.get('/asistentes/:slug', 
+        meetiControllerFE.mostrarAsistentes
+    );
 
-//HABILITAR COOKIE PARSER
-app.use(cookieParser());
+    //MOSTRAR PERFIL EN EL FRONTEND
+    router.get('/usuarios/:id',
+        usuariosControllerFE.mostrarUsuario
+    );
 
-//CREAR LA SESSION =>
-app.use(session({
-    secret : process.env.SECRETO,
-    key : process.env.KEY,
-    resave : false,
-    saveUninitialized : false
-}))
+    //MOSTRAR ASISTENCIA DEL USUARIO A UN MEETI
+    router.post('/confirmar-asistencia/:slug',
+        meetiControllerFE.confirmarAsistencia
+    );
 
-//INICIALIZAR PASSPORT
-app.use(passport.initialize());
-app.use(passport.session());
+    //MUESTRA LOS GRUPOS EN EL FRONTEND
+    router.get('/grupos/:id',
+        gruposControllerFE.mostrarGrupo
+    );
 
-//AGREGAR FLASH MESSAGES PARA LA VALIDACION =>
-app.use(flash());
+    //MUESTRA MEETIS POR CATEGORIA
+    router.get('/categoria/:categoria',
+        meetiControllerFE.mostrarCategoria
+    );
 
-//MIDDLEWARES (USUARIO LOGUEAO, FLASH MESSAGES, FECHA ACTUAL =>
-app.use((req, res, next) => {
-    res.locals.usuario = {...req.user} || null;//CONDICIONAL, DONDE SI NO EXISTE USUARIO, ESTE VA A SER NULL
-    res.locals.mensajes = req.flash();
-    const fecha = new Date();
-    res.locals.year = fecha.getFullYear();
+    //BUSQUEDA
+    router.get('/busqueda',
+        busquedaControllerFE.resultadosBusqueda
+    );
 
-    next();
-})
+//========================RUTAS PARA LAS CUENTAS==============================//
 
-// EL ROUTING => 
-app.use('/', router());
+    //RUTAS DE LA CREACION  Y CONFIRMACION DE CUENTAS
+    router.get('/crear-cuenta', 
+        usuariosController.formCrearCuentas
+    );
+    router.post('/crear-cuenta', 
+        usuariosController.crearNuevaCuenta
+    );
+    router.get('/confirmar-cuenta/:correo', 
+        usuariosController.confirmarCuenta
+    );
 
-//Agrega el PUERTO => 
-app.listen(process.env.PORT, () => {
-    console.log('App listening on port 3000!');
-});
+    //RUTAS DE INICIAR SESSION
+    router.get('/iniciar-sesion', 
+        usuariosController.formIniciarSesion
+    );
+    router.post('/iniciar-sesion', 
+        authController.autenticarUsuario
+    );
+
+    //RUTAS PARA CERRAR SESION
+    router.get('/cerrar-sesion',
+        authController.usuarioAutenticado,
+        authController.cerrarSesion
+    );
+
+//========================RUTAS INTERNAS, PARA EL USUARIO AUTENTICADO==============================//
+
+    //RUTAS DEL PANEL DE ADMINISTRACION
+    router.get('/administracion',
+        authController.usuarioAutenticado,
+        adminController.panelAdministracion
+    );
+
+    //RUTAS PARA LA CREACION DE NUEVOS GRUPOS
+    router.get('/nuevo-grupo',
+        authController.usuarioAutenticado,
+        gruposController.formNuevoGrupo
+    );
+    router.post('/nuevo-grupo',
+        authController.usuarioAutenticado,
+        gruposController.subirImagen,
+        gruposController.crearGrupo
+    );
+
+    //RUTAS PARA EDITAR GRUPOS
+    router.get('/editar-grupo/:grupoId',
+        authController.usuarioAutenticado,
+        gruposController.formEditarGrupo
+    );
+    router.post('/editar-grupo/:grupoId',
+        authController.usuarioAutenticado,
+        gruposController.editarGrupo
+    );
+
+    //RUTAS PARA EDITAR IMAGEN
+    router.get('/imagen-grupo/:grupoId',
+        authController.usuarioAutenticado,
+        gruposController.formEditarImagen
+    );
+    router.post('/imagen-grupo/:grupoId',
+        authController.usuarioAutenticado,
+        gruposController.subirImagen,
+        gruposController.editarImagen
+    );
+
+    //RUTAS ELIMINAR GRUPOS
+    router.get('/eliminar-grupo/:grupoId', 
+        authController.usuarioAutenticado,
+        gruposController.formEliminarGrupo
+    )
+    router.post('/eliminar-grupo/:grupoId', 
+        authController.usuarioAutenticado,
+        gruposController.eliminarGrupo
+    );
+
+    //RUTAS PARA CREAR NUEVOS MEETIS
+    router.get('/nuevo-meeti',
+        authController.usuarioAutenticado,
+        meetiController.formNuevoMeeti
+    );
+    router.post('/nuevo-meeti',
+        authController.usuarioAutenticado,
+        meetiController.sanitizarMeeti,
+        meetiController.crearMeeti
+    );
+
+    //RUTAS PARA EDITAR EL MEETI
+    router.get('/editar-meeti/:id',
+        authController.usuarioAutenticado,
+        meetiController.formEditarMeeti,
+        meetiController.formEliminarMeeti
+    );
+    router.post('/editar-meeti/:id',
+        authController.usuarioAutenticado,
+        meetiController.editarMeeti,
+        meetiController.eliminarMeeti
+    );
+    
+    //RUTAS PARA ELIMINAR EL MEETI
+    router.get('/eliminar-meeti/:id',
+        authController.usuarioAutenticado,
+        meetiController.formEliminarMeeti
+    );
+    router.post('/eliminar-meeti/:id',
+        authController.usuarioAutenticado,
+        meetiController.eliminarMeeti
+    );
+
+//========================RUTAS PARA LOS PERFILES==============================//
+
+    //RUTAS PARA EDITAR INFORMACION DE PERFIL
+    router.get('/editar-perfil',
+        authController.usuarioAutenticado,
+        usuariosController.formEditarPerfil
+    ); 
+    router.post('/editar-perfil',
+        authController.usuarioAutenticado,
+        usuariosController.editarPerfil
+    ); 
+
+    //RUTAS PARA CAMBIAR EL PASSWORD
+    router.get('/cambiar-password',
+        authController.usuarioAutenticado,
+        usuariosController.formCambiarPassword
+    ); 
+    router.post('/cambiar-password',
+        authController.usuarioAutenticado,
+        usuariosController.cambiarPassword
+    );  
+    
+    //RUTAS PARA SUBIR IMAGEN DE PERFIL
+    router.get('/imagen-perfil',
+        authController.usuarioAutenticado,
+        usuariosController.formSubirImagenPerfil
+    );  
+    router.post('/imagen-perfil',
+        authController.usuarioAutenticado,
+        usuariosController.subirImagenPerfil,
+        usuariosController.guardarImagenPerfil
+    );  
+
+    return router;
+}
 
